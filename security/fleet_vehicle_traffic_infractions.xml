@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2020 - TODAY, Marcel Savegnago - Escodoo https://www.escodoo.com.br
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record model="ir.model.access" id="fleet_vehicle_traffic_infractions_user">
+        <field name="name">fleet_vehicle_traffic_infractions_user</field>
+        <field name="model_id" ref="model_fleet_vehicle_traffic_infractions" />
+        <field name="group_id" ref="fleet.fleet_group_user" />
+        <field name="perm_read" eval="1" />
+        <field name="perm_create" eval="0" />
+        <field name="perm_write" eval="0" />
+        <field name="perm_unlink" eval="0" />
+    </record>
+    <record model="ir.model.access" id="fleet_vehicle_traffic_infractions_manager">
+        <field name="name">fleet_vehicle_traffic_infractions_manager</field>
+        <field name="model_id" ref="model_fleet_vehicle_traffic_infractions" />
+        <field name="group_id" ref="fleet.fleet_group_manager" />
+        <field name="perm_read" eval="1" />
+        <field name="perm_create" eval="1" />
+        <field name="perm_write" eval="1" />
+        <field name="perm_unlink" eval="1" />
+    </record>
+    <!-- Record Rules -->
+    <record id="fleet_rule_traffic_infractions_visibility_user" model="ir.rule">
+        <field name="name">User can only see his/her traffic_infractions</field>
+        <field name="model_id" ref="model_fleet_vehicle_traffic_infractions" />
+        <field name="groups" eval="[(4, ref('fleet.fleet_group_user'))]" />
+        <field name="perm_read" eval="1" />
+        <field name="perm_write" eval="0" />
+        <field name="perm_create" eval="0" />
+        <field name="perm_unlink" eval="0" />
+        <field
+            name="domain_force"
+        >[('vehicle_id.driver_id','=',user.partner_id.id)]</field>
+    </record>
+    <record id="fleet_rule_traffic_infractions_visibility_manager" model="ir.rule">
+        <field name="name">Manager has all rights on traffic_infractions</field>
+        <field name="model_id" ref="model_fleet_vehicle_traffic_infractions" />
+        <field name="groups" eval="[(4, ref('fleet.fleet_group_manager'))]" />
+    </record>
+</odoo>

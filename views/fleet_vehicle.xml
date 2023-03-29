@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 - TODAY, RPSJR - Escodoo https://www.babur.com.br
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record model="ir.ui.view" id="fleet_vehicle_form_view">
+        <field name="name">fleet.vehicle.form (in fleet_vehicle_traffic_infractions)</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='update_history']" position="before" >
+                <button
+                    name="fetch_traffic_infractions"
+                    class="oe_highlight"
+                    type="object"
+                    icon="fa-search-plus"
+                    string="Check Infractions"
+                    groups="fleet.fleet_group_manager"
+                    help="Consulta multas na base RENACH do Senatran."
+                >
+                </button>
+            </xpath>
+            <div class="oe_button_box" name="button_box" position="inside">
+                <button
+                    class="oe_stat_button"
+                    type="object"
+                    name="action_view_traffic_infractions"
+                    icon="fa-exclamation-triangle"
+                    context="{'default_vehicle_id': id}"
+                >
+                    <div class="o_stat_info">
+                        <field name="traffic_infractions_count" class="o_stat_value" />
+                        <span class="o_stat_text"> Traffic Infractions</span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright <2023> <Raimundo Pereira da Silva Junior <raimundopsjr@gmail.com>
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+  <data>
+    <!-- form view -->
+        <record id="traffic_infractions_orgao_autuador_view" model="ir.ui.view">
+            <field name="name">orgao_autuador.form</field>
+            <field name="model">traffic_infractions.orgao_autuador</field>
+            <field name="arch" type="xml">
+                <form string="Orgao Autuador">
+                    <group>
+                        <field name="code"/>
+                        <field name="description"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="traffic_infractions_orgao_autuador_view_tree" model="ir.ui.view">
+            <field name="name">orgao_autuador.view.tree</field>
+            <field name="model">traffic_infractions.orgao_autuador</field>
+            <field name="arch" type="xml">
+                <tree string="Orgão Autuador">
+                    <field name="code"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="traffic_infractions_orgao_autuador_action" model="ir.actions.act_window">
+            <field name="name">Orgãos Autuadores</field>
+            <field name="res_model">traffic_infractions.orgao_autuador</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="traffic_infractions_orgao_autuador_view_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Tabela de orgãos autuadores
+                </p><p>
+                    Orgãos autuadores são os emitentes da multa e destinatários dos pagamentos.
+                </p>
+            </field>
+        </record>
+        
+        <!-- MENUS -->
+        <menuitem id="traffic_infractions_orgao_autuador_menu_main" 
+            name="Orgãos Autuadores" 
+            parent="fleet.fleet_configuration" 
+            action="traffic_infractions_orgao_autuador_action"
+            groups="fleet.fleet_group_user"/>
+
+  </data>
+</odoo>
