@@ -4,7 +4,7 @@
 {
     'name': 'Fleet Vehicle Brazilian Traffic Infractions',
     'summary': """
-        This modules consume Senatran RPA API to fetch multas de transito and generate invoices and bills.""",
+        This modules consume Senatran Renach Data trough API to fetch brazilian traffic tickets and generate invoices and bills.""",
     'version': '13.0.1.0.1',
     'license': 'AGPL-3',
     'author': 'Babur Ltda',
