@@ -51,14 +51,17 @@ class FleetVehicle(models.Model):
     def fetch_traffic_infractions(self):
         def timestamp_to_datetime(timestamp):
             return datetime.date.fromtimestamp(timestamp / 1000)
-
+        
+        params = self.env["ir.config_parameter"].sudo()
+        renach_api_url=params.get_param("traffic_infraction.renach_api_url")
+        renach_api_token=params.get_param("traffic_infraction.renach_api_token")
         for vehicle in self:
             company_type = vehicle.vehicle_owner.partner_id.company_type
             if company_type == 'person': 
                 role = 'pf' 
             elif company_type == 'company': 
                 role = 'pj'
-            response = requests.get(f"https://api-senatran-rpa-7bxs4vqwaq-uc.a.run.app/traffic_infractions?role={role}&plate={vehicle.license_plate}")
+            response = requests.get(f"{renach_api_url}/traffic_infractions?role={role}&plate={vehicle.license_plate}")
             if response.status_code == 200:
                 data = response.json()
                 _logger.info(f"response.json(): {response.json()}")
@@ -91,7 +94,7 @@ class FleetVehicle(models.Model):
                 raise UserError(_("Unable to fetch data from API for vehicle %s") % vehicle.license_plate)
 
     def _batch_fetch_traffic_infractions(self):
-        for vehicle in self.search([]):
+        for vehicle in self.search([('active','=',True)]):
             _logger.info("Starting fetch_traffic_infractions...")
             _logger.info(f"vehicle: {vehicle.name}")
             vehicle.fetch_traffic_infractions()

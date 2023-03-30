@@ -32,6 +32,24 @@
                                     <div>
                                         <field name="payment_journal_id"/>
                                     </div>
+                                    <div>
+                                        <label for="renach_api_url"/>
+                                        <div class="text-muted">
+                                            Endpont da API Renach
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <field name="renach_api_url"/>
+                                    </div>
+                                    <div>
+                                        <label for="renach_api_token"/>
+                                        <div class="text-muted">
+                                            Token da API Renach
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <field name="renach_api_token"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>

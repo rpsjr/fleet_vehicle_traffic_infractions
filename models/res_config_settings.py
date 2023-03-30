@@ -21,4 +21,18 @@ class ResConfigSettings(models.TransientModel):
         help="Standard invoice term journal to traffic infraction invoice (out) (30 bco inter)",
         config_parameter="traffic_infraction.payment_journal_id",
     )
+    
+    renach_api_url = fields.Char(
+        string='Url da API Renach',        
+        readonly=False,        
+        help="Endpoint da API Renach",
+        config_parameter="traffic_infraction.renach_api_url",
+    )
+    
+    renach_api_token = fields.Char(
+        string='Token da API Renach',        
+        readonly=False,        
+        help="Token de acesso da API Renach",
+        config_parameter="traffic_infraction.renach_api_token",                           
+                                   )
 
