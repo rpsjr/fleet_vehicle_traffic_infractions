@@ -64,8 +64,8 @@ class FleetVehicle(models.Model):
             response = requests.get(f"{renach_api_url}/traffic_infractions?role={role}&plate={vehicle.license_plate}")
             if response.status_code == 200:
                 data = response.json()
-                _logger.info(f"response.json(): {response.json()}")
-                if "code" in data: #code 404 não há multas
+                _logger.info(f"response.json(): {data}")
+                if "codigo" in data: #code 404 não há multas
                     pass
                 else:
                     for infraction_data in data["multas"]:
