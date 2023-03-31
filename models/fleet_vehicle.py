@@ -65,9 +65,7 @@ class FleetVehicle(models.Model):
             if response.status_code == 200:
                 data = response.json()
                 _logger.info(f"response.json(): {data}")
-                if "codigo" in data: #code 404 não há multas
-                    pass
-                else:
+                if data:
                     for infraction_data in data["multas"]:
                         infraction = vehicle.traffic_infractions_ids.search([("chave_infracao", "=", infraction_data["chaveInfracao"])], limit=1)
                         
@@ -89,10 +87,10 @@ class FleetVehicle(models.Model):
                             "driver_id": vehicle.get_driver_on_date(vehicle.id, timestamp_to_datetime(infraction_data["dataHoraInfracao"])).id,
                         }
 
-                    if infraction:
-                        infraction.write(infraction_values)
-                    else:
-                        vehicle.traffic_infractions_ids.create(infraction_values)
+                        if infraction:
+                            infraction.write(infraction_values)
+                        else:
+                            vehicle.traffic_infractions_ids.create(infraction_values)
             else:
                 raise UserError(_("Unable to fetch data from API for vehicle %s") % vehicle.license_plate)
 
