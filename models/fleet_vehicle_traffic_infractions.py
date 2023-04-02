@@ -152,6 +152,9 @@ class FleetVehicletrafficInfractions(models.Model):
         payment_journal_id= int(
                 params.get_param("traffic_infraction.payment_journal_id")
             )
+        product_category= int(
+                params.get_param("traffic_infraction.product_category")
+            )
 
         for infraction in self:
             if not infraction.driver_id:
@@ -163,8 +166,6 @@ class FleetVehicletrafficInfractions(models.Model):
             # Search for the product based on the product name structure
             product_name = f"[MLT{infraction.codigo_infracao}] Multa CTB"
             product = product_obj.search([('name', '=', product_name)], limit=1)
-            
-            product_category =  self.env['product.category'].search([('name', '=', 'Multas de Transito de Terceiros')], limit=1)
 
             # If the product is not found, create a new one
             if not product:
@@ -249,7 +250,7 @@ class FleetVehicletrafficInfractions(models.Model):
 
 
             # Search for the product based on the product name structure
-            product_name = f"[MLT{infraction.codigo_infracao} xxx]"
+            product_name = f"[MLT{infraction.codigo_infracao} Multa CTB]"
             product = product_obj.search([('name', '=', product_name)], limit=1)
 
             # If the product is not found, create a new one

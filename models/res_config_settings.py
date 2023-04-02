@@ -22,6 +22,14 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="traffic_infraction.payment_journal_id",
     )
     
+    product_category = fields.Many2one(
+        'product.category',
+        string='Product Category',
+        readonly=False,        
+        help="Standard product category to traffic infraction invoice (out) ",
+        config_parameter="traffic_infraction.product_category",
+    )
+    
     renach_api_url = fields.Char(
         string='Url da API Renach',        
         readonly=False,        
