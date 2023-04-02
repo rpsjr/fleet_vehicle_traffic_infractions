@@ -280,7 +280,7 @@ class FleetVehicletrafficInfractions(models.Model):
                 "auto_post": True,
                 "l10n_br_edoc_policy": None,
                 'invoice_date_due': infraction.data_vencimento,
-                'ref': 'Multa de Transito',
+                'ref': infraction.name,
             }
 
             # Create the invoice and post it
