@@ -41,7 +41,7 @@
                     <button 
                         name="create_invoice"
                         states="invoice"
-                        string="Create driver invoice"
+                        string="Create Invoice"
                         type="object"
                         groups="fleet.fleet_group_manager"
                     />
@@ -49,7 +49,7 @@
                     <button 
                         name="create_bill"
                         states="bill"
-                        string="Create gov invoice"
+                        string="Create Bill"
                         type="object"
                         groups="fleet.fleet_group_manager"
                     />
@@ -106,6 +106,7 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="traffic_agency"/>
                             <field name="chave_infracao"/>
                             <field name="codigo_infracao"/>
                             <field name="codigo_orgao_autuador"/>
@@ -139,9 +140,36 @@
         <field name="model">fleet.vehicle.traffic_infractions</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" />
-                <field name="vehicle_id" />
+                <field name="name" filter_domain="[
+                        '|', '|', '|',
+                        ('name', 'ilike', self), ('vehicle_id', 'ilike', self), ('traffic_agency', 'ilike', self), ('driver_id', 'ilike', self), ('situacao', 'ilike', self)]"/>
+                <field name="vehicle_id" filter_domain="[('vehicle_id.name', 'ilike', self)]"/>
+                <field name="traffic_agency" filter_domain="[('traffic_agency.name', 'ilike', self)]"/>
+                <field name="driver_id" filter_domain="[('driver_id.name', 'ilike', self)]"/>
+                <field name="state" />
+                <field name="situacao"  />
                 <separator />
+                <filter
+                    string="Pagas - Renainf"
+                    name="situacao"
+                    domain="[('situacao','=','PAGAS')]"
+                />
+                <filter
+                    string="NÃO Pagas - Renainf"
+                    name="situacao"
+                    domain="[('situacao','!=','PAGAS')]"
+                />
+                <separator />
+                <filter
+                    string="Processed"
+                    name="situacao"
+                    domain="[('state','=','processed')]"
+                />
+                <filter
+                    string="NOT Processed"
+                    name="situacao"
+                    domain="[('state','!=','processed')]"
+                />
                 <group expand="0" string="Group By">
                     <filter
                         string="Vehicle"
@@ -149,9 +177,20 @@
                         domain="[]"
                         context="{'group_by':'vehicle_id'}"
                     />
-                    <separator />
                     <filter
-                        string="traffic_infractions State"
+                        string="Traffic Agency"
+                        name="traffic_agency"
+                        domain="[]"
+                        context="{'group_by':'traffic_agency'}"
+                    />
+                    <filter
+                        string="Driver"
+                        name="driver_id"
+                        domain="[]"
+                        context="{'group_by':'driver_id'}"
+                    />
+                    <filter
+                        string="State"
                         name="state"
                         domain="[]"
                         context="{'group_by':'state'}"
@@ -169,6 +208,7 @@
             <tree>
                 <field name="name" />
                 <field name="vehicle_id" />
+                <field name="traffic_agency" />
                 <field name="driver_id" />
                 <field name="situacao" />
                 <field name="state" />

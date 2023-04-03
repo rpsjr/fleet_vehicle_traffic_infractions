@@ -46,7 +46,7 @@ class FleetVehicletrafficInfractions(models.Model):
     note = fields.Html("Notes", states=READONLY_STATES)
 
     driver_id = fields.Many2one('res.partner', 'Driver', tracking=True, help='Driver of the vehicle', copy=False)
-    #orgao_autuador_id = fields.Many2one('res.partner', 'Orgão Autuador', tracking=True, help='Orgão Autuador of the infraction', copy=False)
+    traffic_agency = fields.Many2one('res.partner', 'Traffic Agency', tracking=True, help='Traffic Agency of the infraction', copy=False, compute="_compute_traffic_agency")
 
     chave_infracao = fields.Char(string='Chave Infracao')
     codigo_infracao = fields.Char(string='Codigo Infracao')
@@ -92,6 +92,11 @@ class FleetVehicletrafficInfractions(models.Model):
     out_invoices_count = fields.Integer(
         compute="_compute_out_invoices_count", string="Traffic Infractions Out Invoice Count"
     )
+
+    @api.depends("codigo_orgao_autuador")
+    def _compute_traffic_agency(self):
+        for rec in self:
+            rec.traffic_agency = rec._get_partner_orgao_autuador()
 
     @api.depends("out_invoice_ids")
     def _compute_out_invoices_count(self):
@@ -152,8 +157,11 @@ class FleetVehicletrafficInfractions(models.Model):
         payment_journal_id= int(
                 params.get_param("traffic_infraction.payment_journal_id")
             )
-        product_category= int(
-                params.get_param("traffic_infraction.product_category")
+        product_category_id= int(
+                params.get_param("traffic_infraction.product_category_id")
+            )
+        product_product_id= int(
+                params.get_param("traffic_infraction.product_product_id")
             )
 
         for infraction in self:
@@ -175,7 +183,7 @@ class FleetVehicletrafficInfractions(models.Model):
                     'sale_ok': True,
                     'purchase_ok': True,
                     'invoice_policy': 'order',
-                    'categ_id': product_category.id,
+                    'categ_id': product_category_id,
                 })
 
             inv_line_values = [{
@@ -184,13 +192,12 @@ class FleetVehicletrafficInfractions(models.Model):
                     'price_unit': infraction.valor_multa or None,
                     'quantity': 1,
             }]
-            inv_line_values.append({
-                    'product_id': False,
-                    'name': f'Taxa administartiva contratual' or None,
-                    'account_id': self.env['account.account'].search([('name', '=', 'Multas de Transito de Terceiros')], limit=1),
-                    'price_unit': 0.15 or None,
-                    'quantity': infraction.valor_multa or None,
-            })
+            if product_product_id:
+                inv_line_values.append({
+                        'product_id': product_product_id,
+                        'quantity': infraction.valor_multa or None,
+                        'price_unit': product_obj.search([('id', '=', product_product_id)], limit=1).lst_price or None,
+                    })
             # Create the invoice
             invoice_vals = {
                 'partner_id': partner.id,
@@ -226,10 +233,21 @@ class FleetVehicletrafficInfractions(models.Model):
         else:
             return None
 
+    def _get_partner_orgao_autuador(self):
+            # Get the gov authoritys's partner record
+            partner_name = self.get_orgao_autuador_description(self.codigo_orgao_autuador)
+            partner = self.env['res.partner'].search([('name', '=', partner_name )])
+            # If the gov authoritys's is not found, create a new one
+            if not partner:
+                partner = self.env['res.partner'].create({
+                    'name': partner_name,
+                    'company_type': 'company',
+                })
+            return partner
+
     def create_bill(self):
         account_move_obj = self.env['account.move']
         product_obj = self.env['product.product']
-        partner_obj = self.env['res.partner']
 
         for infraction in self:
             if not infraction.driver_id:
@@ -238,16 +256,7 @@ class FleetVehicletrafficInfractions(models.Model):
                 raise UserError(_("There is no due date assigned for this traffic infraction."))
 
             # Get the gov authoritys's partner record
-            partner_name = self.get_orgao_autuador_description(infraction.codigo_orgao_autuador)
-            partner = partner_obj.search([('name', '=', partner_name )])
-
-            # If the gov authoritys's is not found, create a new one
-            if not partner:
-                partner = partner_obj.create({
-                    'name': partner_name,
-                    'company_type': 'company',
-                })
-
+            partner = self._get_partner_orgao_autuador()
 
             # Search for the product based on the product name structure
             product_name = f"[MLT{infraction.codigo_infracao} Multa CTB]"

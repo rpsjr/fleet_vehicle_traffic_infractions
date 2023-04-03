@@ -33,6 +33,24 @@
                                         <field name="payment_journal_id"/>
                                     </div>
                                     <div>
+                                        <label for="product_category_id"/>
+                                        <div class="text-muted">
+                                            Default product category for traffic infraction product creation
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <field name="product_category_id"/>
+                                    </div>
+                                    <div>
+                                        <label for="product_product_id"/>
+                                        <div class="text-muted">
+                                           Contractual administrative fee's product
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <field name="product_product_id"/>
+                                    </div>
+                                    <div>
                                         <label for="renach_api_url"/>
                                         <div class="text-muted">
                                             Endpont da API Renach

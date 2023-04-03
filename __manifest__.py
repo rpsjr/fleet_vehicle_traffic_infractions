@@ -1,4 +1,4 @@
-# Copyright 2023 Babur Ltda
+# Copyright 2023 RPSJR raimundops.jr@gmail.com
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
@@ -7,8 +7,8 @@
         This modules consume Senatran Renach Data trough API to fetch brazilian traffic tickets and generate invoices and bills.""",
     'version': '13.0.1.0.1',
     'license': 'AGPL-3',
-    'author': 'Babur Ltda',
-    'website': 'babur.com.br',
+    'author': 'RPSJR',
+    'website': 'https://github.com/rpsjr/fleet_vehicle_traffic_infractions',
     "application": True,
     "installable": True,
     "auto_install": True,

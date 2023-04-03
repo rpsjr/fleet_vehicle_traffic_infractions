@@ -21,7 +21,7 @@
             <field name="name">orgao_autuador.view.tree</field>
             <field name="model">traffic_infractions.orgao_autuador</field>
             <field name="arch" type="xml">
-                <tree string="Orgão Autuador">
+                <tree string="Traffic Agency">
                     <field name="code"/>
                     <field name="description"/>
                 </tree>

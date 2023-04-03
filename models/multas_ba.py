@@ -17,7 +17,7 @@ class DetranMultasBA(models.Model):
     local = fields.Char('Local da Infração')
     municipio = fields.Char('Município da Infração')
     valor = fields.Char('Valor da Infração')
-    orgao_cod = fields.Char('Código do Orgão Autuador')
+    orgao_cod = fields.Char('Código do Traffic Agency')
     orgao_desc = fields.Char('Descrição Orgão')
 
 
