@@ -49,12 +49,9 @@ class FleetVehicle(models.Model):
         return action
 
     def fetch_traffic_infractions(self):
-        def timestamp_to_datetime(timestamp):
-            return datetime.date.fromtimestamp(timestamp / 1000)
-        
         params = self.env["ir.config_parameter"].sudo()
         renach_api_url=params.get_param("traffic_infraction.renach_api_url")
-        renach_api_token=params.get_param("traffic_infraction.renach_api_token")
+        #renach_api_token=params.get_param("traffic_infraction.renach_api_token")
         for vehicle in self:
             company_type = vehicle.vehicle_owner.partner_id.company_type
             if company_type == 'person': 
@@ -65,32 +62,7 @@ class FleetVehicle(models.Model):
             if response.status_code == 200:
                 data = response.json()
                 _logger.info(f"response.json(): {data}")
-                if data:
-                    for infraction_data in data["multas"]:
-                        infraction = vehicle.traffic_infractions_ids.search([("chave_infracao", "=", infraction_data["chaveInfracao"])], limit=1)
-                        
-                        infraction_values = {
-                            "vehicle_id": vehicle.id,
-                            "chave_infracao": infraction_data.get("chaveInfracao", False),
-                            "codigo_infracao": infraction_data.get("codigoInfracao", False),
-                            "codigo_orgao_autuador": infraction_data.get("codigoOrgaoAutuador", False),
-                            "data_hora_infracao": timestamp_to_datetime(infraction_data["dataHoraInfracao"]) if "dataHoraInfracao" in infraction_data else False,
-                            "data_registro_pagamento": infraction_data.get("dataRegistroPagamento", False),
-                            "data_vencimento": infraction_data.get("dataVencimento", False),
-                            "descricao_infracao": infraction_data.get("descricaoInfracao", False),
-                            "numero_auto_infracao": infraction_data.get("numeroAutoInfracao", False),
-                            "numero_identificacao_proprietario": infraction_data.get("numeroIdentificacaoProprietario", False),
-                            "permite_boleto_sne": infraction_data.get("permiteBoletoSne", False),
-                            "placa": infraction_data.get("placa", False),
-                            "situacao": infraction_data.get("situacao", False),
-                            "valor_multa": infraction_data.get("valorMulta", False),
-                            "driver_id": vehicle.get_driver_on_date(vehicle.id, timestamp_to_datetime(infraction_data["dataHoraInfracao"])).id,
-                        }
-
-                        if infraction:
-                            infraction.write(infraction_values)
-                        else:
-                            vehicle.traffic_infractions_ids.create(infraction_values)
+                #self.process_infraction_json(data, vehicle)
             else:
                 raise UserError(_("Unable to fetch data from API for vehicle %s") % vehicle.license_plate)
 

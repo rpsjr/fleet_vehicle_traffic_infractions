@@ -3,6 +3,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+import datetime
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -284,7 +285,7 @@ class FleetVehicletrafficInfractions(models.Model):
                 'partner_id': partner.id, #TODO, orgao autuador https://www.gov.br/infraestrutura/pt-br/assuntos/transito/arquivos-senatran/portarias/2022/Portaria3542022ANEXO.pdf
                 'type': 'in_invoice',
                 'invoice_date': fields.Date.today(),
-                'narration': f"Payment bill for for traffic infraction {infraction.name}",
+                'narration': f"Payment bill for for traffic infraction {infraction.name} [{infraction.vehicle.tax_id}]",
                 'invoice_line_ids': [(0, 0, inv_line_values )],
                 "invoice_origin": self.name,
                 "auto_post": True,
@@ -308,7 +309,7 @@ class FleetVehicletrafficInfractions(models.Model):
 
     def update_traffic_infractions(self):
          for rec in self:
-            rec.vehicle_id.update_traffic_infractions(rec)
+            rec.vehicle_id.fetch_traffic_infractions()
 
     def _batch_create_invoice(self):
         _logger.info("Starting _cron_get_orgao_autuador_description...")
@@ -323,6 +324,36 @@ class FleetVehicletrafficInfractions(models.Model):
         for infraction in self.search([('state','=','bill'),('data_vencimento','!=',False)]):
             _logger.info(f"infraction: {infraction.name}")
             infraction.create_bill()
+
+    def process_infraction_json(self, data, vehicle):
+        def timestamp_to_datetime(timestamp):
+            return datetime.date.fromtimestamp(timestamp / 1000)
+
+        if data:
+            for infraction_data in data["multas"]:              
+                infraction_values = {
+                    "vehicle_id": vehicle.id,
+                    "chave_infracao": infraction_data.get("chaveInfracao", False),
+                    "codigo_infracao": infraction_data.get("codigoInfracao", False),
+                    "codigo_orgao_autuador": infraction_data.get("codigoOrgaoAutuador", False),
+                    "data_hora_infracao": timestamp_to_datetime(infraction_data["dataHoraInfracao"]) if "dataHoraInfracao" in infraction_data else False,
+                    "data_registro_pagamento": infraction_data.get("dataRegistroPagamento", False),
+                    "data_vencimento": infraction_data.get("dataVencimento", False),
+                    "descricao_infracao": infraction_data.get("descricaoInfracao", False),
+                    "numero_auto_infracao": infraction_data.get("numeroAutoInfracao", False),
+                    "numero_identificacao_proprietario": infraction_data.get("numeroIdentificacaoProprietario", False),
+                    "permite_boleto_sne": infraction_data.get("permiteBoletoSne", False),
+                    "placa": infraction_data.get("placa", False),
+                    "situacao": infraction_data.get("situacao", False),
+                    "valor_multa": infraction_data.get("valorMulta", False),
+                    "driver_id": vehicle.get_driver_on_date(vehicle.id, timestamp_to_datetime(infraction_data["dataHoraInfracao"])).id,
+                }
+                
+                infraction = vehicle.traffic_infractions_ids.search([("chave_infracao", "=", infraction_data["chaveInfracao"])], limit=1)
+                if infraction:
+                    infraction.write(infraction_values)
+                else:
+                    vehicle.traffic_infractions_ids.create(infraction_values)
 
 class TrafficInfractionTimeline(models.Model):
     _name = 'fleet.vehicle.traffic_infractions.timeline'
