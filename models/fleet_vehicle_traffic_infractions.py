@@ -285,7 +285,7 @@ class FleetVehicletrafficInfractions(models.Model):
                 'partner_id': partner.id, #TODO, orgao autuador https://www.gov.br/infraestrutura/pt-br/assuntos/transito/arquivos-senatran/portarias/2022/Portaria3542022ANEXO.pdf
                 'type': 'in_invoice',
                 'invoice_date': fields.Date.today(),
-                'narration': f"Payment bill for for traffic infraction {infraction.name} [{infraction.vehicle.tax_id}]",
+                'narration': f"Payment bill for for traffic infraction {infraction.name} [{infraction.vehicle_id.tax_id}]",
                 'invoice_line_ids': [(0, 0, inv_line_values )],
                 "invoice_origin": self.name,
                 "auto_post": True,
