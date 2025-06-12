@@ -16,6 +16,9 @@ class FleetVehicletrafficInfractions(models.Model):
     _description = "Fleet Vehicle Traffic Infractions"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
+    _sql_constraints = [('chave_infracao_unique', 'unique(chave_infracao)', "The infracttion key is unique for each fine!")]
+
+
     READONLY_STATES = {
         "processed": [("readonly", True)],
         "cancel": [("readonly", True)],
