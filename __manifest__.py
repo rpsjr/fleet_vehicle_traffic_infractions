@@ -29,5 +29,5 @@
     ],
     'demo': [
     ],
-    'post_init_hook': 'populate_table_orgao_autuador',
+    'post_init_hook': ['post_init_hook','populate_table_orgao_autuador'],
 }

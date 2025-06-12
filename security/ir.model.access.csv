@@ -1,2 +1,3 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 access_traffic_infractions_orgao_autuador,Access Traffic Agency Model,model_traffic_infractions_orgao_autuador,base.group_user,fleet.fleet_group_manager,1,1,1,1
+access_fleet_vehicle_traffic_infractions_timeline_manager,fleet.vehicle.traffic_infractions.timeline.manager,model_fleet_vehicle_traffic_infractions_timeline,base.group_user,1,0,0,0
