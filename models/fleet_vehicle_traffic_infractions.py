@@ -107,6 +107,18 @@ class FleetVehicletrafficInfractions(models.Model):
         copy=False,
  )
 
+    def copy(self, default=None):
+        if default is None:
+            default = {}
+        # Set the state to 'draft' for the duplicated record
+        default['state'] = 'draft'
+        # Optionally, you might want to clear or modify other fields
+        # that should not be duplicated (e.g., sequence number if applicable)
+        # default['name'] = '/'
+
+        return super(FleetVehicletrafficInfractions, self).copy(default)
+
+
     @api.depends('codigo_orgao_autuador', 'numero_auto_infracao', 'codigo_infracao')
     def _compute_chave_infracao(self):
         for rec in self:

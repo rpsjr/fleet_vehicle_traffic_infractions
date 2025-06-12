@@ -217,6 +217,9 @@
                 <field name="data_vencimento" />
                 <field name="permite_boleto_sne"/>
                 <field name="valor_multa" />
+                <field name="chave_infracao" />
+                <field name="codigo_infracao" />
+                <field name="codigo_orgao_autuador" />
             </tree>
         </field>
     </record>
