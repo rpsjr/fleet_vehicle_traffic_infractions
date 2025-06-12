@@ -3,7 +3,7 @@ from odoo.upgrade import util
 
 _logger = logging.getLogger(__name__)
 
-def compute_chave_infracao(cr, registry):
+def migrate(cr, version):
     env = util.env(cr)
     traffic_infractions = env['fleet.vehicle.traffic_infractions'].search([])
     for infraction in traffic_infractions:
