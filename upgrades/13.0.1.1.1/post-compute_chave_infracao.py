@@ -1,7 +1,10 @@
-from odoo import api, SUPERUSER_ID
+import logging
+from odoo.upgrade import util
+
+_logger = logging.getLogger(__name__)
 
 def compute_chave_infracao(cr, registry):
-    env = api.Environment(cr, SUPERUSER_ID, {})
+    env = util.env(cr)
     traffic_infractions = env['fleet.vehicle.traffic_infractions'].search([])
     for infraction in traffic_infractions:
         chave_infracao = "{}{}{}".format(
