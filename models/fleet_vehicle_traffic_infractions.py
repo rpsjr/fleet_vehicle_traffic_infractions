@@ -16,7 +16,7 @@ class FleetVehicletrafficInfractions(models.Model):
     _description = "Fleet Vehicle Traffic Infractions"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    _sql_constraints = [('chave_infracao_unique', 'unique(codigo_orgao_autuador, numero_auto_infracao, codigo_infracao)', "The infracttion key is unique for each fine!")]
+    _sql_constraints = [('chave_infracao_unique', 'unique(chave_infracao)', "The infracttion key is unique for each fine!")]
 
     READONLY_STATES = {
         "processed": [("readonly", True)],
@@ -74,13 +74,16 @@ class FleetVehicletrafficInfractions(models.Model):
             store=True,
             unique=True,
     )
-    codigo_infracao = fields.Char(string="Codigo Infracao")
-    codigo_orgao_autuador = fields.Char(string="Codigo Orgao Autuador")
+    codigo_infracao = fields.Char(string="Codigo Infracao",
+        required=True)
+    codigo_orgao_autuador = fields.Char(string="Codigo Orgao Autuador",
+        required=True)
     data_hora_infracao = fields.Datetime(string="Data Hora Infracao")
     data_registro_pagamento = fields.Date(string="Data Registro Pagamento")
     data_vencimento = fields.Date(string="Data Vencimento")
     descricao_infracao = fields.Char(string="Descricao Infracao")
-    numero_auto_infracao = fields.Char(string="Numero Auto Infracao")
+    numero_auto_infracao = fields.Char(string="Numero Auto Infracao",
+        required=True)
     numero_identificacao_proprietario = fields.Char(
         string="Numero Identificacao Proprietario"
     )
