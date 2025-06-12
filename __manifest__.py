@@ -5,7 +5,7 @@
     'name': 'Fleet Vehicle Brazilian Traffic Infractions',
     'summary': """
         This modules consume Senatran Renach Data trough API to fetch brazilian traffic tickets and generate invoices and bills.""",
-    'version': '13.0.1.0.1',
+    'version': '13.0.1.1.1',
     'license': 'AGPL-3',
     'author': 'RPSJR',
     'website': 'https://github.com/rpsjr/fleet_vehicle_traffic_infractions',
