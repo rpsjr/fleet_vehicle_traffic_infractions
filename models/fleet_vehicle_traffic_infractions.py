@@ -42,7 +42,6 @@ class FleetVehicletrafficInfractions(models.Model):
         help=" * Draft: not confirmed yet.\n"
         " * Confirmed: Traffic Infractions has been confirmed.\n"
         " * Cancelled: has been cancelled, can't be confirmed anymore.",
-    )
 
     vehicle_id = fields.Many2one(
         "fleet.vehicle",
@@ -66,7 +65,12 @@ class FleetVehicletrafficInfractions(models.Model):
         compute="_compute_traffic_agency",
     )
 
-    chave_infracao = fields.Char(string="Chave Infracao")
+    chave_infracao = fields.Char(
+ string="Chave Infracao",
+        compute='_compute_chave_infracao',
+        store=True,
+        unique=True,
+ )
     codigo_infracao = fields.Char(string="Codigo Infracao")
     codigo_orgao_autuador = fields.Char(string="Codigo Orgao Autuador")
     data_hora_infracao = fields.Datetime(string="Data Hora Infracao")
@@ -95,6 +99,15 @@ class FleetVehicletrafficInfractions(models.Model):
         readonly=True,
         help="Goverment fine invoice generated for the traffic infraction",
         copy=False,
+ )
+
+ @api.depends('codigo_orgao_autuador', 'numero_auto_infracao', 'codigo_infracao')
+ def _compute_chave_infracao(self):
+ for rec in self:
+ if rec.codigo_orgao_autuador and rec.numero_auto_infracao and rec.codigo_infracao:
+ rec.chave_infracao = f"{rec.codigo_orgao_autuador}{rec.numero_auto_infracao}{rec.codigo_infracao}"
+ else:
+ rec.chave_infracao = False
     )
 
     timeline_ids = fields.One2many(
