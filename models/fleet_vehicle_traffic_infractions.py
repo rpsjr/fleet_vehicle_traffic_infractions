@@ -42,6 +42,7 @@ class FleetVehicletrafficInfractions(models.Model):
         help=" * Draft: not confirmed yet.\n"
         " * Confirmed: Traffic Infractions has been confirmed.\n"
         " * Cancelled: has been cancelled, can't be confirmed anymore.",
+    )
 
     vehicle_id = fields.Many2one(
         "fleet.vehicle",
